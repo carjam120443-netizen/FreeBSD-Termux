@@ -1,0 +1,41 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+set -e
+
+PROJECT_DIR="$HOME/.freebsd-termux"
+DISK="$PROJECT_DIR/freebsd.img"
+
+mkdir -p "$PROJECT_DIR"
+
+case "${1:-start}" in
+  start)
+    if ! command -v qemu-system-aarch64 >/dev/null 2>&1; then
+      echo "QEMU is not installed. Run: pkg install qemu-system-aarch64-headless"
+      exit 1
+    fi
+
+    if [ ! -f "$DISK" ]; then
+      echo "No FreeBSD disk image found."
+      echo "Place a FreeBSD image at: $DISK"
+      exit 1
+    fi
+
+    qemu-system-aarch64 \
+      -machine virt \
+      -cpu max \
+      -m 2048 \
+      -drive file="$DISK",format=raw,if=virtio \
+      -nographic
+    ;;
+  stop)
+    echo "FreeBSD-Termux runs in the foreground. Press Ctrl-A X in QEMU to exit."
+    ;;
+  install)
+    echo "FreeBSD-Termux installer is not implemented yet."
+    echo "Download a compatible FreeBSD ARM64 image and place it at:"
+    echo "$DISK"
+    ;;
+  *)
+    echo "Usage: freebsd-termux {start|install|stop}"
+    ;;
+esac
