@@ -4,6 +4,8 @@ set -e
 
 PROJECT_DIR="$HOME/.freebsd-termux"
 DISK="$PROJECT_DIR/freebsd.img"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+DOWNLOAD_SCRIPT="$SCRIPT_DIR/download-freebsd.sh"
 
 mkdir -p "$PROJECT_DIR"
 
@@ -28,14 +30,11 @@ case "${1:-start}" in
       -nographic
     ;;
   install)
-    echo "FreeBSD ARM64 automatic installation is being prepared."
-    echo "The installer will download a compatible FreeBSD image, verify it,"
-    echo "and place it at: $DISK"
-    echo ""
-    echo "Automatic image download is not enabled in this development build yet."
-    echo ""
-    echo "For now, place a compatible FreeBSD ARM64 raw disk image at:"
-    echo "$DISK"
+    if [ ! -f "$DOWNLOAD_SCRIPT" ]; then
+      echo "FreeBSD downloader not found: $DOWNLOAD_SCRIPT"
+      exit 1
+    fi
+    bash "$DOWNLOAD_SCRIPT"
     ;;
   stop)
     echo "FreeBSD-Termux runs in the foreground."
