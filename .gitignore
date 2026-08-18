@@ -1,0 +1,11 @@
+# FreeBSD virtual disks
+*.img
+*.qcow2
+*.raw
+
+# QEMU/runtime files
+*.pid
+*.log
+
+# Local project data
+.freebsd-termux/
