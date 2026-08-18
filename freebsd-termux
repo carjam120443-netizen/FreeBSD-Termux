@@ -16,7 +16,7 @@ case "${1:-start}" in
 
     if [ ! -f "$DISK" ]; then
       echo "No FreeBSD disk image found."
-      echo "Place a FreeBSD image at: $DISK"
+      echo "Run: freebsd-termux install"
       exit 1
     fi
 
@@ -27,15 +27,28 @@ case "${1:-start}" in
       -drive file="$DISK",format=raw,if=virtio \
       -nographic
     ;;
-  stop)
-    echo "FreeBSD-Termux runs in the foreground. Press Ctrl-A X in QEMU to exit."
-    ;;
   install)
-    echo "FreeBSD-Termux installer is not implemented yet."
-    echo "Download a compatible FreeBSD ARM64 image and place it at:"
+    echo "FreeBSD ARM64 automatic installation is being prepared."
+    echo "The installer will download a compatible FreeBSD image, verify it,"
+    echo "and place it at: $DISK"
+    echo ""
+    echo "Automatic image download is not enabled in this development build yet."
+    echo ""
+    echo "For now, place a compatible FreeBSD ARM64 raw disk image at:"
     echo "$DISK"
     ;;
+  stop)
+    echo "FreeBSD-Termux runs in the foreground."
+    echo "Press Ctrl-A X in QEMU to exit."
+    ;;
+  restart)
+    exec "$0" start
+    ;;
+  remove)
+    rm -f "$DISK"
+    echo "FreeBSD disk image removed."
+    ;;
   *)
-    echo "Usage: freebsd-termux {start|install|stop}"
+    echo "Usage: freebsd-termux {install|start|stop|restart|remove}"
     ;;
 esac
